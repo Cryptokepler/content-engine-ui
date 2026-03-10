@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Sparkles, ChevronDown, Loader2, ArrowRight, Copy, Check, Save } from 'lucide-react'
 import type { Pilar, Formato } from '@/lib/mock-data'
 import { saveContent } from '@/lib/api'
+import SlidePreview from '@/components/SlidePreview'
 
 interface Idea {
   hook: string
@@ -241,6 +242,8 @@ export default function GeneratePage() {
               <span key={h} className="text-xs bg-gray-100 text-gray-500 px-2.5 py-1 rounded-full">{h}</span>
             ))}
           </div>
+
+          <SlidePreview hook={generatedCopy.hook} slides={generatedCopy.slides} cta={generatedCopy.cta} hashtags={generatedCopy.hashtags} />
         </div>
       )}
     </div>
