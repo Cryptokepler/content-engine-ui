@@ -1,4 +1,4 @@
-const VPS_API = 'http://187.77.193.15:3100';
+const VPS_API = 'https://srv1378488.hstgr.cloud/content-api';
 
 export interface ContentItem {
   id: string
