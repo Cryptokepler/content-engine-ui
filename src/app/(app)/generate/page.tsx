@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Sparkles, ChevronDown, Loader2, ArrowRight, Copy, Check } from 'lucide-react'
+import { Sparkles, ChevronDown, Loader2, ArrowRight, Copy, Check, Save } from 'lucide-react'
 import type { Pilar, Formato } from '@/lib/mock-data'
+import { saveContent } from '@/lib/api'
 
 interface Idea {
   hook: string
@@ -30,6 +31,10 @@ export default function GeneratePage() {
   const [developingId, setDevelopingId] = useState<number | null>(null)
   const [generatedCopy, setGeneratedCopy] = useState<GeneratedCopy | null>(null)
   const [copied, setCopied] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
+  const [savingIdea, setSavingIdea] = useState<number | null>(null)
+  const [savedIdeas, setSavedIdeas] = useState<Set<number>>(new Set())
 
   const generateIdeas = async () => {
     setLoadingIdeas(true)
@@ -72,6 +77,46 @@ export default function GeneratePage() {
     navigator.clipboard.writeText(text)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  const saveIdeaToNotion = async (idea: Idea, index: number) => {
+    setSavingIdea(index)
+    try {
+      await saveContent({
+        idea: idea.hook,
+        hook: idea.hook,
+        copy: idea.descripcion,
+        pilar: idea.pilar,
+        formato: idea.formato,
+        status: '💡 Ideas',
+      })
+      setSavedIdeas(prev => new Set(prev).add(index))
+    } catch (e) {
+      alert('Error guardando: ' + (e as Error).message)
+    }
+    setSavingIdea(null)
+  }
+
+  const saveCopyToNotion = async () => {
+    if (!generatedCopy) return
+    setSaving(true)
+    try {
+      const fullCopy = generatedCopy.slides.map((s, i) => `${i + 1}. ${s.titulo}\n${s.texto}`).join('\n\n')
+      await saveContent({
+        idea: generatedCopy.hook,
+        hook: generatedCopy.hook,
+        copy: fullCopy,
+        cta: generatedCopy.cta,
+        pilar: ideas.find((_, i) => developingId === null)?.pilar || '',
+        formato: ideas.find((_, i) => developingId === null)?.formato || 'Post',
+        status: '✍️ Copy',
+      })
+      setSaved(true)
+      setTimeout(() => setSaved(false), 3000)
+    } catch (e) {
+      alert('Error guardando: ' + (e as Error).message)
+    }
+    setSaving(false)
   }
 
   return (
@@ -139,10 +184,16 @@ export default function GeneratePage() {
                 </div>
                 <h3 className="font-semibold mb-2">{idea.hook}</h3>
                 <p className="text-sm text-gray-500 mb-4">{idea.descripcion}</p>
-                <button onClick={() => developIdea(idea, i)} disabled={developingId === i}
-                  className="text-sm text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1 disabled:opacity-50">
-                  {developingId === i ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Desarrollando...</> : <><ArrowRight className="w-3.5 h-3.5" /> Desarrollar copy completo</>}
-                </button>
+                <div className="flex items-center gap-3">
+                  <button onClick={() => developIdea(idea, i)} disabled={developingId === i}
+                    className="text-sm text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1 disabled:opacity-50">
+                    {developingId === i ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Desarrollando...</> : <><ArrowRight className="w-3.5 h-3.5" /> Desarrollar</>}
+                  </button>
+                  <button onClick={() => saveIdeaToNotion(idea, i)} disabled={savingIdea === i || savedIdeas.has(i)}
+                    className="text-sm text-green-600 hover:text-green-700 font-medium flex items-center gap-1 disabled:opacity-50">
+                    {savedIdeas.has(i) ? <><Check className="w-3.5 h-3.5" /> Guardada</> : savingIdea === i ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Guardando...</> : <><Save className="w-3.5 h-3.5" /> Guardar</>}
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -154,9 +205,15 @@ export default function GeneratePage() {
         <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm animate-fade-in">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-lg">Copy generado</h2>
-            <button onClick={copyAll} className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1">
-              {copied ? <><Check className="w-4 h-4 text-green-500" /> Copiado</> : <><Copy className="w-4 h-4" /> Copiar todo</>}
-            </button>
+            <div className="flex items-center gap-3">
+              <button onClick={saveCopyToNotion} disabled={saving || saved}
+                className="text-sm bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg font-medium flex items-center gap-1 disabled:opacity-70 transition">
+                {saved ? <><Check className="w-4 h-4" /> Guardado en Notion</> : saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Guardando...</> : <><Save className="w-4 h-4" /> Guardar en Notion</>}
+              </button>
+              <button onClick={copyAll} className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1">
+                {copied ? <><Check className="w-4 h-4 text-green-500" /> Copiado</> : <><Copy className="w-4 h-4" /> Copiar todo</>}
+              </button>
+            </div>
           </div>
 
           <div className="bg-indigo-50 rounded-xl p-4 mb-4">
