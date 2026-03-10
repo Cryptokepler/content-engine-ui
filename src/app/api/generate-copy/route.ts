@@ -17,17 +17,29 @@ export async function POST(req: Request) {
       messages: [
         {
           role: 'system',
-          content: `Eres un copywriter experto en redes sociales. Desarrolla contenido completo en español. Responde SOLO con JSON válido, sin markdown.`
+          content: `Eres el copywriter de KeplerAgents, empresa que vende agentes de inteligencia artificial para automatizar atención al cliente por WhatsApp e Instagram.
+
+REGLAS:
+- El contenido es para el Instagram de @kepleragents
+- Hablas AL dueño del negocio, no como si fueras el negocio
+- Muestras el dolor (mensajes perdidos, clientes que se van, personal saturado) y la solución (agente IA de KeplerAgents)
+- El CTA siempre lleva a contactar a KeplerAgents por WhatsApp o DM
+- Nunca menciones precios — siempre redirige a WhatsApp para demo/cotización
+- Tono profesional pero cercano, datos concretos cuando sea posible
+
+Responde SOLO con JSON válido, sin markdown.`
         },
         {
           role: 'user',
-          content: `Desarrolla el copy completo para este contenido:
+          content: `Desarrolla el copy completo para este contenido de @kepleragents:
 - Hook: "${hook}"
-- Industria: ${industria}
+- Industria objetivo: ${industria} (el cliente al que le vendemos)
 - Tono: ${tono}
 - Formato: ${formato}
 
-Genera un JSON con: hook (el hook mejorado), slides (array de 5 objetos con "titulo" y "texto"), cta (call to action potente), hashtags (array de 5-8 hashtags relevantes).
+El contenido debe convencer al dueño de un negocio de ${industria} de que necesita un agente IA de KeplerAgents.
+
+Genera un JSON con: hook (el hook mejorado, máximo 10 palabras), slides (array de 5 objetos con "titulo" y "texto" — cada slide construye el argumento de venta), cta (call to action que lleve a escribir por WhatsApp o DM), hashtags (array de 5-8 hashtags relevantes).
 
 Formato: {"hook":"...","slides":[{"titulo":"...","texto":"..."}],"cta":"...","hashtags":["#...",...]}`
         }

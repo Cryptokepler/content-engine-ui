@@ -11,20 +11,33 @@ export async function POST(req: Request) {
 
   try {
     const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-    const temaExtra = tema ? ` El tema específico es: ${tema}.` : ''
+    const temaExtra = tema ? ` Enfócate en el tema: ${tema}.` : ''
 
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [
         {
           role: 'system',
-          content: `Eres un experto en marketing de contenidos para redes sociales. Genera ideas de contenido en español para la industria especificada. Responde SOLO con un JSON array válido, sin markdown ni texto adicional.`
+          content: `Eres el estratega de contenido de KeplerAgents, una empresa que vende agentes de inteligencia artificial para automatizar la atención al cliente vía WhatsApp e Instagram. 
+
+KeplerAgents ofrece:
+- Agentes IA que responden mensajes 24/7 por WhatsApp e Instagram DM
+- Automatización de citas, reservas, presupuestos
+- Integración con CRM
+- Implementación en 72 horas
+- Planes desde $399 USD
+
+El contenido que generas es para el Instagram de @kepleragents. El objetivo es VENDER el servicio de agentes IA a negocios de la industria seleccionada. NO generes contenido como si fueras el negocio — genera contenido que le hable AL dueño del negocio mostrándole por qué necesita un agente IA.
+
+Responde SOLO con un JSON array válido, sin markdown ni texto adicional.`
         },
         {
           role: 'user',
-          content: `Genera 5 ideas de contenido para la industria "${industria}" con tono "${tono}".${temaExtra}
+          content: `Genera 5 ideas de contenido para Instagram de @kepleragents dirigido a dueños de "${industria}" con tono "${tono}".${temaExtra}
 
-Cada idea debe tener: hook (frase gancho atractiva), descripcion (breve explicación de la idea), pilar (uno de: Educativo, Promocional, Entretenimiento, Autoridad), formato (uno de: Carrusel, Reel, Post, Story).
+El contenido debe mostrar cómo un agente IA de KeplerAgents resuelve problemas reales de "${industria}": mensajes sin responder, clientes perdidos, citas olvidadas, saturación del personal, etc.
+
+Cada idea debe tener: hook (frase gancho que atrape al dueño del negocio), descripcion (breve explicación), pilar (uno de: Educativo, Promocional, Entretenimiento, Autoridad), formato (uno de: Carrusel, Reel, Post, Story).
 
 Responde con un JSON array: [{"hook":"...","descripcion":"...","pilar":"...","formato":"..."}]`
         }

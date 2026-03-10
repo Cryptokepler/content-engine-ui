@@ -19,8 +19,8 @@ interface GeneratedCopy {
   hashtags: string[]
 }
 
-const industries = ['Restaurantes', 'Clínicas dentales', 'Inmobiliarias', 'Gimnasios', 'Salones de belleza', 'E-commerce', 'Consultoría', 'General']
-const tonos = ['Profesional', 'Casual', 'Urgente']
+const industries = ['Restaurantes', 'Clínicas dentales', 'Inmobiliarias', 'Gimnasios', 'Salones de belleza', 'E-commerce', 'Consultoría', 'Hoteles', 'Agencias de viaje', 'Talleres mecánicos', 'General']
+const tonos = ['Profesional', 'Casual', 'Urgente', 'Educativo', 'Provocador']
 
 export default function GeneratePage() {
   const [industria, setIndustria] = useState('Restaurantes')
@@ -130,7 +130,7 @@ export default function GeneratePage() {
       <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm mb-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Industria</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">¿A quién le vendemos?</label>
             <div className="relative">
               <select value={industria} onChange={e => setIndustria(e.target.value)}
                 className="w-full appearance-none pl-3 pr-8 py-2.5 rounded-xl border border-gray-200 bg-white text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
@@ -151,7 +151,7 @@ export default function GeneratePage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">Tema (opcional)</label>
-            <input value={tema} onChange={e => setTema(e.target.value)} placeholder="Ej: promoción de verano"
+            <input value={tema} onChange={e => setTema(e.target.value)} placeholder="Ej: mensajes sin responder, automatizar citas"
               className="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-white text-sm focus:ring-2 focus:ring-indigo-500 outline-none" />
           </div>
         </div>
