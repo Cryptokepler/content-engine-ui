@@ -13,7 +13,7 @@ type IGPost = {
 export default function AnalyticsPage() {
   const [posts, setPosts] = useState<IGPost[]>([])
   const [loading, setLoading] = useState(true)
-  const [source, setSource] = useState<'instagram' | 'mock'>('instagram')
+  const [source, setSource] = useState('instagram' as string)
 
   useEffect(() => {
     fetch('/api/instagram')
